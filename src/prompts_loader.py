@@ -17,5 +17,11 @@ def load_prompts(version: str) -> PromptConfig:
         raise FileNotFoundError(f"Menu file not found: {main_file}")
     with open(main_file, encoding="utf-8") as f:
         data = yaml.safe_load(f)
+    if data is None:
+        raise ValueError(f"Prompt file is empty: {main_file}")
     config = PromptConfig(**data)
+    if version != config.version:
+        raise ValueError(
+            f"Asked for {version} but the file says {config.version}: {main_file}"
+        )
     return config
